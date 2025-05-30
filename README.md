@@ -4,4 +4,4 @@ Task with advanced Searching and CDN Bootstrap and Fontawesome Icons with real t
 
 LIVE DEMO 
 
-<img src="banne.png" />
+<img src="banner.png" />
