@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <style>
+        body {
+            background: repeating-linear-gradient( 45deg, #f8f9fa, #f8f9fa 10px, #e9ecef 10px, #e9ecef 20px );
+        }
+    </style>
+
+
+    <div class="container">
+        <h3 class="bg-danger">Task List</h3>
+        <script>
+            document.getElementById('taskSearch').addEventListener('keyup', function () {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('table tbody tr');
+
+                rows.forEach(row => {
+                    const taskColumn = row.querySelector('td:nth-child(2)');
+                    const text = taskColumn.textContent.toLowerCase();
+
+                    row.style.display = text.includes(filter) ? '' : 'none';
+                });
+            });
+        </script>
+        <!-- Search Input with Icon -->
+        <!--<div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-search"></i>
+                    </span>
+                    <input type="text" id="taskSearch" class="form-control" placeholder="Search task or status...">
+                </div>
+            </div>
+        </div>-->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-search"></i>
+                    </span>
+                    <input type="text" id="taskSearch" class="form-control" placeholder="Search task or status...">
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--<div class="row mb-3">
+            <div class="col-md-6">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search tasks..." value=" request.GET.q }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>-->
+        <!--<p>
+            <a href="{% url 'tasks:task_create' %}" class="btn btn-success right">
+                <i class="fa-solid fa-plus me-1"></i> Add New Task
+            </a>
+        </p>-->
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'tasks:task_create' %}" class="btn btn-success">
+                <i class="fa-solid fa-plus me-1"></i> Add New Task
+            </a>
+        </div>
+
+
+        <div class="container mt-4">
+            <table class="table table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>S#</th>
+                        <th>Task</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="text-capitalize">
+                            {{ task.name }} - {{ task.get_status_display }}
+                        </td>
+                        <td>
+                            <a href="{% url 'tasks:task_update' task.id %}" class="text-warning me-2" title="Update">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="{% url 'tasks:task_delete' task.id %}" class="text-danger" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="3" class="text-center text-muted">No matching tasks found.</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <!--<table>
+
+        {% for task in tasks %}
+        <tr>
+            <td class="text-capitalize">-->
+        <!--(<a class="text-warning" href="{% url 'tasks:task_update' task.id %}">Update</a> |
+                    <a class="text-danger" href="{% url 'tasks:task_delete' task.id %}">Delete</a>)
+                </td>
+            </tr>
+            {% endfor %}
+        </table>-->
+        <!--<p>
+            <a class="text-success" href="{% url 'tasks:task_create' %}"> + Add A New Task</a>
+        </p>-->
+
+    </div>
+</body>
+<script>
+    const searchInput = document.getElementById('taskSearch');
+    const rows = document.querySelectorAll('table tbody tr');
+    const noResultsRow = document.getElementById('noResultsRow');
+
+    searchInput.addEventListener('keyup', function () {
+        const filter = this.value.toLowerCase();
+        let matchCount = 0;
+
+        rows.forEach(row => {
+            const cell = row.querySelector('td:nth-child(2)');
+            if (!cell || row.id === 'noResultsRow') return;
+
+            const text = cell.textContent.toLowerCase();
+
+            // Remove old highlight
+            cell.innerHTML = cell.textContent;
+
+            if (filter && text.includes(filter)) {
+                // Highlight match
+                const regex = new RegExp(`(${filter})`, 'gi');
+                cell.innerHTML = cell.textContent.replace(regex, '<mark>$1</mark>');
+                row.style.display = '';
+                matchCount++;
+            } else if (!filter) {
+                row.style.display = '';
+                cell.innerHTML = cell.textContent; // Reset
+                matchCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        noResultsRow.style.display = matchCount === 0 ? '' : 'none';
+    });
+</script>
+
+</html>
